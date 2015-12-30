@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity
     public  List<Weather> weatherList;*/
     private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
     private SharedPreferences pref;
+    private MyAdapter adapter;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +240,8 @@ public class MainActivity extends AppCompatActivity
                     List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(str);
                     refreshLiveWeather(weatherLive);
                     liveType.setText(weatherList.get(1).getDayType());
+                    refreshWeather(weatherList);
+
                     break;
                 default:
                     super.handleMessage(msg);
@@ -249,6 +258,11 @@ public class MainActivity extends AppCompatActivity
         liveHumidity.setText(weatherLive.getShidu());
     }
 
+    public void refreshWeather(List<Weather> weathers){
+        adapter = new MyAdapter(MainActivity.this,R.layout.weatheritem,weathers);
+        listView.setAdapter(adapter);
+    }
+
     public void findItem(){
         cityLive = (TextView) findViewById(R.id.cityLive);
         liveType = (TextView) findViewById(R.id.liveType);
@@ -256,7 +270,7 @@ public class MainActivity extends AppCompatActivity
         liveWindPower = (TextView) findViewById(R.id.liveWindPower);
         liveWindDirection = (TextView) findViewById(R.id.liveWindDirection);
         liveHumidity = (TextView) findViewById(R.id.liveHumidity);
-
+        listView = (ListView) findViewById(R.id.weatherListView);
     }
 
     private class MyHttpCallBack implements HttpCallbackListener{
@@ -280,4 +294,26 @@ public class MainActivity extends AppCompatActivity
             return cityName;
         }
     }
+
+    private class MyAdapter extends ArrayAdapter<Weather> {
+        private int resouredId;
+
+        public MyAdapter(Context context,int resouredId,List<Weather> objects){
+            super(context,resouredId,objects);
+            this.resouredId = resouredId;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Weather weather = getItem(position);
+            View view = LayoutInflater.from(getContext()).inflate(resouredId, null);
+            TextView dataId = (TextView) view.findViewById(R.id.dateId);
+            TextView highTemperature = (TextView) view.findViewById(R.id.highTemperature);
+            TextView lowTemperature = (TextView) view.findViewById(R.id.lowTemperature);
+            dataId.setText(weather.getDate());
+            highTemperature.setText(weather.getHigh());
+            lowTemperature.setText(weather.getLow());
+            return view;
+        }
+    }
+
 }

@@ -11,7 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.song.putaoweather.MainActivity"
     tools:showIn="@layout/app_bar_main"
-    android:background="#c8b9b9">
+    android:background="@drawable/side_nav_bar">
 
     <RelativeLayout
         android:id="@+id/liveRL"
@@ -29,7 +29,6 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textSize="50sp"
-            android:background="#20a7bf"
             android:gravity="center" />
 
         <LinearLayout
@@ -42,8 +41,7 @@
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#33c644">
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -51,8 +49,8 @@
                     android:text="多云"
                     android:id="@+id/liveType"
                     android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:textSize="30sp" />
+                    android:textSize="30sp"
+                    android:gravity="center" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -60,7 +58,7 @@
                     android:text="15度"
                     android:id="@+id/liveTemperature"
                     android:layout_weight="1"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:textSize="30sp" />
             </LinearLayout>
 
@@ -68,8 +66,7 @@
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#b44b4b">
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -77,8 +74,8 @@
                     android:text="风力"
                     android:id="@+id/liveWindPower"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:gravity="center" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -86,8 +83,8 @@
                     android:text="风向"
                     android:id="@+id/liveWindDirection"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:gravity="center" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -95,8 +92,8 @@
                     android:text="湿度"
                     android:id="@+id/liveHumidity"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
@@ -106,6 +103,7 @@
         android:layout_height="match_parent"
         android:id="@+id/weatherListView"
         android:layout_below="@+id/liveRL"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        android:layout_marginTop="30dp" />
 
 </RelativeLayout>
