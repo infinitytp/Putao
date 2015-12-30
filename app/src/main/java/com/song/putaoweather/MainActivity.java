@@ -1,11 +1,13 @@
 package com.song.putaoweather;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -20,8 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     /*public WeatherLive weatherLive;
     public  List<Weather> weatherList;*/
     private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,22 +68,29 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         findItem();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connectBaidu();
-                boolean flag = true;
-                while (flag){
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean remember = pref.getBoolean("rememberLocation",false);
+        if (remember){
+            city = pref.getString("Location","");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectWeatherSite(city);
+                }
+            }).start();
+        } else {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Location location = getLocation();
+                    city = getCityFromBaidu(location);
+                    Log.d("Tag",city + city + city);
                     if (city!=null){
-                        Log.d("TagGGGG", city);
-                        connectWeatherSite();
-                        flag = false;
+                        connectWeatherSite(city);
                     }
                 }
-            }
-        }).start();
-
+            }).start();
+        }
 
         myHandler = new MyHandler();
         Message msg = myHandler.obtainMessage();
@@ -171,46 +179,35 @@ public class MainActivity extends AppCompatActivity
         } catch (SecurityException e) {
             e.printStackTrace();
         }
-        Log.d("Tag",provider);
         return location;
     }
 
     /**
      * 连接百度GEOAPI，得到城市名称;
     * */
-    public void connectBaidu(){
-        Location location = getLocation();
+    public String getCityFromBaidu(Location location){
+        String cityName;
         String cityLocation = "";
         if (location!=null){
             cityLocation = location.getLatitude() + "," + location.getLongitude();
         }
         String address = GeoUrl + cityLocation;
-        HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                Message msg = myHandler.obtainMessage();
-                msg.what = 1;
-                msg.obj = response;
-                myHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
+        MyHttpCallBack callBack = new MyHttpCallBack();
+        HttpUtil.sendHttpRequest(address,callBack);
+        cityName = callBack.getCityName();
+        return cityName;
     }
 
-    public void connectWeatherSite(){
+    public void connectWeatherSite(String cityName){
         try {
-            if (city!=null){
-                city = URLEncoder.encode(city,"utf-8");
-                String address = WEATHERADDRESS + city;
+            if (cityName!=null){
+                cityName = URLEncoder.encode(cityName,"utf-8");
+                String address = WEATHERADDRESS + cityName;
                 HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {
                         Message msg = myHandler.obtainMessage();
-                        msg.what = 2;
+                        msg.what = 1;
                         msg.obj = response;
                         myHandler.sendMessage(msg);
                     }
@@ -231,15 +228,11 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1:
-                    String response = (String)msg.obj;
-                    city = ParseXmlUtil.getLocationCity(response);
-                    break;
-                case 2:
                     String str = (String)msg.obj;
                     WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(str);
                     List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(str);
                     refreshLiveWeather(weatherLive);
-                    Log.d("Tag",weatherList.get(3).getDayType());
+                    liveType.setText(weatherList.get(1).getDayType());
                     break;
                 default:
                     super.handleMessage(msg);
@@ -254,7 +247,6 @@ public class MainActivity extends AppCompatActivity
         liveWindPower.setText(weatherLive.getFengli());
         liveWindDirection.setText(weatherLive.getFengxiang());
         liveHumidity.setText(weatherLive.getShidu());
-        liveType.setText("多云");
     }
 
     public void findItem(){
@@ -267,4 +259,25 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private class MyHttpCallBack implements HttpCallbackListener{
+        private String cityName;
+
+        @Override
+        public void onFinish(String response) {
+            cityName = ParseXmlUtil.getLocationCity(response);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("rememberLocation",true);
+            editor.putString("Location",cityName);
+            editor.commit();
+        }
+
+        @Override
+        public void onError(Exception e) {
+
+        }
+
+        public String getCityName(){
+            return cityName;
+        }
+    }
 }
