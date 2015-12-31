@@ -74,8 +74,8 @@
                     android:text="风力"
                     android:id="@+id/liveWindPower"
                     android:layout_weight="1"
-                    android:textSize="20sp"
-                    android:gravity="center" />
+                    android:textSize="15sp"
+                    android:gravity="center|left" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -83,8 +83,8 @@
                     android:text="风向"
                     android:id="@+id/liveWindDirection"
                     android:layout_weight="1"
-                    android:textSize="20sp"
-                    android:gravity="center" />
+                    android:textSize="15sp"
+                    android:gravity="center|left" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -92,8 +92,8 @@
                     android:text="湿度"
                     android:id="@+id/liveHumidity"
                     android:layout_weight="1"
-                    android:textSize="20sp"
-                    android:gravity="center" />
+                    android:textSize="15sp"
+                    android:gravity="center|left" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

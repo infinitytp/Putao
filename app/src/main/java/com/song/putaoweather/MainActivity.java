@@ -143,10 +143,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.addCity) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
+            Log.d("Tag","增加城市");
+        } else if (id == R.id.manageCity) {
+            Log.d("Tag","管理城市");
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -252,10 +253,10 @@ public class MainActivity extends AppCompatActivity
 
     public void refreshLiveWeather(WeatherLive weatherLive){
         cityLive.setText(weatherLive.getCity());
-        liveTemperature.setText(weatherLive.getWendu());
-        liveWindPower.setText(weatherLive.getFengli());
-        liveWindDirection.setText(weatherLive.getFengxiang());
-        liveHumidity.setText(weatherLive.getShidu());
+        liveTemperature.setText(weatherLive.getWendu() + "℃");
+        liveWindPower.setText("风力:" + weatherLive.getFengli());
+        liveWindDirection.setText("风向:" + weatherLive.getFengxiang());
+        liveHumidity.setText("湿度:" + weatherLive.getShidu());
     }
 
     public void refreshWeather(List<Weather> weathers){
