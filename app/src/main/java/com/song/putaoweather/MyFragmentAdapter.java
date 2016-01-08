@@ -11,9 +11,9 @@ import java.util.List;
  * Created by SongPc on 2016/1/7.
  */
 public class MyFragmentAdapter extends FragmentPagerAdapter{
-    private ArrayList<Fragment> list;
+    private ArrayList<WeatherFragment> list;
 
-    public MyFragmentAdapter(FragmentManager fm, ArrayList<Fragment> list){
+    public MyFragmentAdapter(FragmentManager fm, ArrayList<WeatherFragment> list){
         super(fm);
         this.list = list;
     }

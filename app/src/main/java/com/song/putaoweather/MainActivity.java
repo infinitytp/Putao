@@ -10,6 +10,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -42,12 +44,13 @@ public class MainActivity extends AppCompatActivity
             "&output=xml&pois=1&callback=renderReverse&location=";
     private MyHandler myHandler;
     private String  city = null;
-    /*public WeatherLive weatherLive;
-    public  List<Weather> weatherList;*/
-    private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
+//    private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
     private SharedPreferences pref;
-    private MyAdapter adapter;
-    private ListView listView;
+    /*private MyAdapter adapter;
+    private ListView listView;*/
+
+    private ViewPager viewPager;
+    private ArrayList<WeatherFragment> fragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +77,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        findItem();
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        fragments = new ArrayList<>();
+
+//        findItem();
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
         if (remember){
             city = pref.getString("Location","");
+            final String[] strings = new String[2];
+            strings[0] = city;
+            strings[1] = "北京";
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connectWeatherSite(city);
+                    for (int i = 0; i<strings.length; i++){
+                        String s = strings[i];
+                        connectWeatherSite(s);
+                    }
                 }
             }).start();
         } else {
@@ -237,12 +249,16 @@ public class MainActivity extends AppCompatActivity
             switch (msg.what){
                 case 1:
                     String str = (String)msg.obj;
-                    WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(str);
+                    /*WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(str);
                     List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(str);
                     refreshLiveWeather(weatherLive);
                     liveType.setText(weatherList.get(1).getDayType());
-                    refreshWeather(weatherList);
+                    refreshWeather(weatherList);*/
 
+                    WeatherFragment fragment = WeatherFragment.newInstance(str);
+                    fragments.add(fragment);
+                    MyFragmentAdapter adapter = new MyFragmentAdapter(getSupportFragmentManager(),fragments);
+                    viewPager.setAdapter(adapter);
                     break;
                 default:
                     super.handleMessage(msg);
@@ -251,7 +267,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void refreshLiveWeather(WeatherLive weatherLive){
+    /*public void refreshLiveWeather(WeatherLive weatherLive){
         cityLive.setText(weatherLive.getCity());
         liveTemperature.setText(weatherLive.getWendu() + "℃");
         liveWindPower.setText("风力:" + weatherLive.getFengli());
@@ -272,7 +288,7 @@ public class MainActivity extends AppCompatActivity
         liveWindDirection = (TextView) findViewById(R.id.liveWindDirection);
         liveHumidity = (TextView) findViewById(R.id.liveHumidity);
         listView = (ListView) findViewById(R.id.weatherListView);
-    }
+    }*/
 
     private class MyHttpCallBack implements HttpCallbackListener{
         private String cityName;
@@ -296,7 +312,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private class MyAdapter extends ArrayAdapter<Weather> {
+    /*private class MyAdapter extends ArrayAdapter<Weather> {
         private int resouredId;
 
         public MyAdapter(Context context,int resouredId,List<Weather> objects){
@@ -315,6 +331,6 @@ public class MainActivity extends AppCompatActivity
             lowTemperature.setText(weather.getLow());
             return view;
         }
-    }
+    }*/
 
 }
