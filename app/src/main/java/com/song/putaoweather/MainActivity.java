@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences pref;
     /*private MyAdapter adapter;
     private ListView listView;*/
-
+    private WeatherDB weatherDB;
     private ViewPager viewPager;
     private ArrayList<WeatherFragment> fragments;
 
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         fragments = new ArrayList<>();
-
+        weatherDB = WeatherDB.getInstance(this);
+        weatherDB.init();
 //        findItem();
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
