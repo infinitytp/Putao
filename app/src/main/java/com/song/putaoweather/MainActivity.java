@@ -44,10 +44,7 @@ public class MainActivity extends AppCompatActivity
             "&output=xml&pois=1&callback=renderReverse&location=";
     private MyHandler myHandler;
     private String  city = null;
-//    private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
     private SharedPreferences pref;
-    /*private MyAdapter adapter;
-    private ListView listView;*/
     private WeatherDB weatherDB;
     private ViewPager viewPager;
     private ArrayList<WeatherFragment> fragments;
@@ -81,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         fragments = new ArrayList<>();
         weatherDB = WeatherDB.getInstance(this);
         weatherDB.init();
-//        findItem();
+
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
         if (remember){
@@ -250,12 +247,6 @@ public class MainActivity extends AppCompatActivity
             switch (msg.what){
                 case 1:
                     String str = (String)msg.obj;
-                    /*WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(str);
-                    List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(str);
-                    refreshLiveWeather(weatherLive);
-                    liveType.setText(weatherList.get(1).getDayType());
-                    refreshWeather(weatherList);*/
-
                     WeatherFragment fragment = WeatherFragment.newInstance(str);
                     fragments.add(fragment);
                     MyFragmentAdapter adapter = new MyFragmentAdapter(getSupportFragmentManager(),fragments);
@@ -267,29 +258,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-    /*public void refreshLiveWeather(WeatherLive weatherLive){
-        cityLive.setText(weatherLive.getCity());
-        liveTemperature.setText(weatherLive.getWendu() + "℃");
-        liveWindPower.setText("风力:" + weatherLive.getFengli());
-        liveWindDirection.setText("风向:" + weatherLive.getFengxiang());
-        liveHumidity.setText("湿度:" + weatherLive.getShidu());
-    }
-
-    public void refreshWeather(List<Weather> weathers){
-        adapter = new MyAdapter(MainActivity.this,R.layout.weatheritem,weathers);
-        listView.setAdapter(adapter);
-    }
-
-    public void findItem(){
-        cityLive = (TextView) findViewById(R.id.cityLive);
-        liveType = (TextView) findViewById(R.id.liveType);
-        liveTemperature = (TextView) findViewById(R.id.liveTemperature);
-        liveWindPower = (TextView) findViewById(R.id.liveWindPower);
-        liveWindDirection = (TextView) findViewById(R.id.liveWindDirection);
-        liveHumidity = (TextView) findViewById(R.id.liveHumidity);
-        listView = (ListView) findViewById(R.id.weatherListView);
-    }*/
 
     private class MyHttpCallBack implements HttpCallbackListener{
         private String cityName;
@@ -313,25 +281,5 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*private class MyAdapter extends ArrayAdapter<Weather> {
-        private int resouredId;
-
-        public MyAdapter(Context context,int resouredId,List<Weather> objects){
-            super(context,resouredId,objects);
-            this.resouredId = resouredId;
-        }
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            Weather weather = getItem(position);
-            View view = LayoutInflater.from(getContext()).inflate(resouredId, null);
-            TextView dataId = (TextView) view.findViewById(R.id.dateId);
-            TextView highTemperature = (TextView) view.findViewById(R.id.highTemperature);
-            TextView lowTemperature = (TextView) view.findViewById(R.id.lowTemperature);
-            dataId.setText(weather.getDate());
-            highTemperature.setText(weather.getHigh());
-            lowTemperature.setText(weather.getLow());
-            return view;
-        }
-    }*/
 
 }

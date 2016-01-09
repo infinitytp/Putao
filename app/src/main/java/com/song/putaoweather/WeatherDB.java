@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,5 +66,47 @@ public class WeatherDB {
             }
             Log.d("Tag","数据库初始化完毕");
         }
+    }
+
+    public List<String> getProvinces(){
+        List<String> list = new ArrayList<>();
+        String sql = "select distinct province from location";
+        Cursor cursor = sqlDB.rawQuery(sql,null);
+        if (cursor.moveToFirst()){
+            do {
+                String province = cursor.getString(cursor.getColumnIndex("province"));
+                list.add(province);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<String> getCity(String province){
+        List<String> list = new ArrayList<>();
+        String sql = "select distinct province,city from location where province like ?";
+        Cursor cursor = sqlDB.rawQuery(sql,new String[]{province});
+        if (cursor.moveToFirst()){
+            do {
+                String city = cursor.getString(cursor.getColumnIndex("city"));
+                list.add(city);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<String> getCounty(String city){
+        List<String> list = new ArrayList<>();
+        String sql = "select distinct city,county from location where city like ?";
+        Cursor cursor = sqlDB.rawQuery(sql,new String[]{city});
+        if (cursor.moveToFirst()){
+            do {
+                String county = cursor.getString(cursor.getColumnIndex("county"));
+                list.add(county);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
     }
 }
