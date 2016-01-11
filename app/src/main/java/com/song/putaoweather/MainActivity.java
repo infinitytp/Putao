@@ -1,6 +1,7 @@
 package com.song.putaoweather;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
@@ -155,7 +156,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.addCity) {
             // Handle the camera action
-            Log.d("Tag","增加城市");
+            Intent intent = new Intent(MainActivity.this,SelectCountyActivity.class);
+            startActivityForResult(intent,2);
         } else if (id == R.id.manageCity) {
             Log.d("Tag","管理城市");
         } else if (id == R.id.nav_slideshow) {
@@ -281,5 +283,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 2:
+                Bundle bundle = data.getExtras();
+                String str = bundle.getString("County");
+                Log.d("MainTag",str);
+                break;
+            default:
+                break;
+        }
+    }
 }
