@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity
     private WeatherDB weatherDB;
     private ViewPager viewPager;
     private ArrayList<WeatherFragment> fragments;
+    private List<String> cities = new ArrayList<>();
+    private boolean addCounty = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +82,15 @@ public class MainActivity extends AppCompatActivity
         weatherDB = WeatherDB.getInstance(this);
         weatherDB.init();
 
+
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
         if (remember){
-            city = pref.getString("Location","");
-            final String[] strings = new String[2];
-            strings[0] = city;
-            strings[1] = "北京";
+            cities = SharedPreferencesUtils.String2List(pref.getString("City","上海"));
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i<strings.length; i++){
-                        String s = strings[i];
+                    for (String s:cities){
                         connectWeatherSite(s);
                     }
                 }
@@ -270,6 +269,7 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean("rememberLocation",true);
             editor.putString("Location",cityName);
+            cities.add(cityName);
             editor.commit();
         }
 
@@ -289,11 +289,39 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode){
             case 2:
                 Bundle bundle = data.getExtras();
-                String str = bundle.getString("County");
-                Log.d("MainTag",str);
+                String county = bundle.getString("County");
+                addCounty = bundle.getBoolean("AddCounty");
+                cities.add(county);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("Location1",county);
+                editor.commit();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (addCounty){
+            final String county = cities.get(cities.size()-1);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectWeatherSite(county);
+                }
+            }).start();
+            addCounty = false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences.Editor editor = pref.edit();
+        String cityXml = SharedPreferencesUtils.List2String(cities);
+        editor.putString("City",cityXml);
+        editor.commit();
     }
 }

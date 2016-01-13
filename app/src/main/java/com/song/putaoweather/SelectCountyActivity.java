@@ -75,6 +75,7 @@ public class SelectCountyActivity extends Activity {
                 } else if (currentLevel == COUNTYLEVEL){
                     Bundle bundle = new Bundle();
                     bundle.putString("County",selected);
+                    bundle.putBoolean("AddCounty",true);
                     intent.putExtras(bundle);
                     intent.setClass(SelectCountyActivity.this, MainActivity.class);
                     setResult(10, intent);
