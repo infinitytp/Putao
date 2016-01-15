@@ -13,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,16 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -51,6 +46,10 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<WeatherFragment> fragments;
     private List<String> cities = new ArrayList<>();
     private boolean addCounty = false;
+    private boolean removeCounty = false;
+    private static final int SELECT_COUNTY_REQUEST_CODE = 1;
+    private static final int MANAGE_COUNTY_REQUEST_CODE = 2;
+    private MyFragmentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +85,12 @@ public class MainActivity extends AppCompatActivity
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
         if (remember){
-            cities = SharedPreferencesUtils.String2List(pref.getString("City","上海"));
+            cities = SharedPreferencesUtils.String2List(pref.getString("City",""));
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (String s:cities){
-                        connectWeatherSite(s);
+                    for (String city:cities){
+                        connectWeatherSite(city);
                     }
                 }
             }).start();
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     Location location = getLocation();
                     city = getCityFromBaidu(location);
-                    Log.d("Tag",city + city + city);
                     if (city!=null){
                         connectWeatherSite(city);
                     }
@@ -156,9 +154,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.addCity) {
             // Handle the camera action
             Intent intent = new Intent(MainActivity.this,SelectCountyActivity.class);
-            startActivityForResult(intent,2);
+            startActivityForResult(intent, SELECT_COUNTY_REQUEST_CODE);
         } else if (id == R.id.manageCity) {
-            Log.d("Tag","管理城市");
+            Intent intent = new Intent(MainActivity.this,ManageCountyActivity.class);
+            intent.putExtra("Cities",SharedPreferencesUtils.List2String(cities));
+            startActivityForResult(intent, MANAGE_COUNTY_REQUEST_CODE);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -217,11 +217,11 @@ public class MainActivity extends AppCompatActivity
         return cityName;
     }
 
-    public void connectWeatherSite(String cityName){
+    public void connectWeatherSite(String city){
         try {
-            if (cityName!=null){
-                cityName = URLEncoder.encode(cityName,"utf-8");
-                String address = WEATHERADDRESS + cityName;
+            if (city!=null){
+                city = URLEncoder.encode(city,"utf-8");
+                String address = WEATHERADDRESS + city;
                 HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {
@@ -247,11 +247,16 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1:
-                    String str = (String)msg.obj;
-                    WeatherFragment fragment = WeatherFragment.newInstance(str);
+                    String response = (String)msg.obj;
+                    WeatherFragment fragment = WeatherFragment.newInstance(response);
                     fragments.add(fragment);
-                    MyFragmentAdapter adapter = new MyFragmentAdapter(getSupportFragmentManager(),fragments);
-                    viewPager.setAdapter(adapter);
+                    if (adapter == null){
+                        adapter = new MyFragmentAdapter(getSupportFragmentManager(),fragments);
+                        viewPager.setAdapter(adapter);
+                    } else {
+                        adapter.notifyDataSetChanged();
+                    }
+
                     break;
                 default:
                     super.handleMessage(msg);
@@ -287,14 +292,27 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case 2:
-                Bundle bundle = data.getExtras();
-                String county = bundle.getString("County");
-                addCounty = bundle.getBoolean("AddCounty");
-                cities.add(county);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("Location1",county);
-                editor.commit();
+            case SELECT_COUNTY_REQUEST_CODE:
+                switch (resultCode){
+                    case RESULT_OK:
+                        Bundle bundle = data.getExtras();
+                        String county = bundle.getString("County");
+                        addCounty = bundle.getBoolean("AddCounty");
+                        cities.add(county);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case MANAGE_COUNTY_REQUEST_CODE:
+                switch (resultCode){
+                    case RESULT_OK:
+                        removeCounty = true;
+                        break;
+                    case RESULT_CANCELED:
+                        removeCounty = true;
+                        cities.remove(cities.size()-1);
+                }
                 break;
             default:
                 break;
@@ -313,6 +331,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }).start();
             addCounty = false;
+        }
+        if (removeCounty){
+//            adapter.notifyDataSetChanged();
+            removeCounty = false;
         }
     }
 

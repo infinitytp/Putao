@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SelectCountyActivity"></activity>
+        <activity android:name=".SelectCountyActivity" />
+        <activity android:name=".ManageCountyActivity"></activity>
     </application>
 
 </manifest>

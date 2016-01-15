@@ -52,9 +52,4 @@ public class LocationList {
         return list;
     }
 
-    public void getcount(){
-        List<LocationId> list = getLocationList();
-        Log.d("Tag",String.valueOf(list.size()));
-        Log.d("Tag",list.get(23).getCity());
-    }
 }

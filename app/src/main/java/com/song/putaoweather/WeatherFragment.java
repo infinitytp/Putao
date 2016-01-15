@@ -22,6 +22,7 @@ import java.util.zip.Inflater;
 public class WeatherFragment extends Fragment {
     private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
     private ListView listView;
+    private static String city;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -30,7 +31,9 @@ public class WeatherFragment extends Fragment {
     public static WeatherFragment newInstance(String response){
         WeatherFragment wf = new WeatherFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("Response",response);
+        bundle.putString("Response", response);
+        WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(response);
+        city = weatherLive.getCity();
         wf.setArguments(bundle);
         return wf;
     }
@@ -93,6 +96,10 @@ public class WeatherFragment extends Fragment {
             low.setText(weather.getLow());
             return view;
         }
+    }
+
+    public String getCity(){
+        return city;
     }
 
 }

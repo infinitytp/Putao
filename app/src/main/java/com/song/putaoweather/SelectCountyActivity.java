@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +50,9 @@ public class SelectCountyActivity extends Activity {
                 selected = dataList.get(position);
                 if (currentLevel == PROVINCELEVEL) {
                     dataList.clear();
-                    Log.d("Tagaaaa", selected);
                     dataList.addAll(weatherDB.getCity(selected));
                     myAdapter.notifyDataSetChanged();
                     currentLevel = CITYLEVEL;
-                    Log.d("Tag",String.valueOf(currentLevel));
                 } else if (currentLevel == CITYLEVEL) {
                     dataList.clear();
                     dataList.addAll(weatherDB.getCounty(selected));
@@ -78,7 +75,7 @@ public class SelectCountyActivity extends Activity {
                     bundle.putBoolean("AddCounty",true);
                     intent.putExtras(bundle);
                     intent.setClass(SelectCountyActivity.this, MainActivity.class);
-                    setResult(10, intent);
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }
@@ -97,10 +94,15 @@ public class SelectCountyActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = LayoutInflater.from(getContext()).inflate(resourceId,null);
             String str = dataList.get(position);
-            Log.d("Tag",str);
             TextView tv = (TextView) view.findViewById(R.id.gridItemTv);
             tv.setText(str);
             return view;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 }
