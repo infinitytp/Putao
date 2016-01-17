@@ -34,6 +34,7 @@ public class WeatherFragment extends Fragment {
         bundle.putString("Response", response);
         WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(response);
         city = weatherLive.getCity();
+        bundle.putString("City",city);
         wf.setArguments(bundle);
         return wf;
     }

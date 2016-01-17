@@ -307,11 +307,11 @@ public class MainActivity extends AppCompatActivity
             case MANAGE_COUNTY_REQUEST_CODE:
                 switch (resultCode){
                     case RESULT_OK:
-                        removeCounty = true;
+                        removeCounty = data.getBooleanExtra("RemoveCounty",false);
+                        String resultString = data.getStringExtra("Counties");
+                        cities.clear();
+                        cities.addAll(SharedPreferencesUtils.String2List(resultString));
                         break;
-                    case RESULT_CANCELED:
-                        removeCounty = true;
-                        cities.remove(cities.size()-1);
                 }
                 break;
             default:
@@ -333,7 +333,14 @@ public class MainActivity extends AppCompatActivity
             addCounty = false;
         }
         if (removeCounty){
-//            adapter.notifyDataSetChanged();
+            Iterator<WeatherFragment> iterator = fragments.iterator();
+            while (iterator.hasNext()){
+                WeatherFragment fragment = iterator.next();
+                if (!cities.contains(fragment.getArguments().getString("City"))){
+                    iterator.remove();
+                }
+            }
+            adapter.notifyDataSetChanged();
             removeCounty = false;
         }
     }
