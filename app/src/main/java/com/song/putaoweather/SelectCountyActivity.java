@@ -14,8 +14,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class SelectCountyActivity extends Activity {
@@ -24,11 +22,12 @@ public class SelectCountyActivity extends Activity {
     private TextView tvTip;
     private Button btn;
     private List<String> dataList;
-    private static final int PROVINCELEVEL = 0;
-    private static final int CITYLEVEL = 1;
-    private static final int COUNTYLEVEL = 2;
+    private static final int PROVINCE_LEVEL = 0;
+    private static final int CITY_LEVEL = 1;
+    private static final int COUNTY_LEVEL = 2;
     private int currentLevel = 0;
     private String selected;
+    private String province,city,county;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +47,23 @@ public class SelectCountyActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selected = dataList.get(position);
-                if (currentLevel == PROVINCELEVEL) {
+                if (currentLevel == PROVINCE_LEVEL) {
+                    province = selected;
+                    tvTip.setText(province + ".");
                     dataList.clear();
                     dataList.addAll(weatherDB.getCity(selected));
                     myAdapter.notifyDataSetChanged();
-                    currentLevel = CITYLEVEL;
-                } else if (currentLevel == CITYLEVEL) {
+                    currentLevel = CITY_LEVEL;
+                } else if (currentLevel == CITY_LEVEL) {
+                    city = selected;
+                    tvTip.setText(province + "." + city + ".");
                     dataList.clear();
                     dataList.addAll(weatherDB.getCounty(selected));
                     myAdapter.notifyDataSetChanged();
-                    currentLevel = COUNTYLEVEL;
+                    currentLevel = COUNTY_LEVEL;
+                } else if (currentLevel == COUNTY_LEVEL){
+                    county = selected;
+                    tvTip.setText(province + "." + city + "." + county);
                 }
             }
         });
@@ -65,11 +71,11 @@ public class SelectCountyActivity extends Activity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentLevel == PROVINCELEVEL){
+                if (currentLevel == PROVINCE_LEVEL){
                     Toast.makeText(SelectCountyActivity.this, "请选择城市", Toast.LENGTH_SHORT).show();
-                } else if (currentLevel == CITYLEVEL){
+                } else if (currentLevel == CITY_LEVEL){
                     Toast.makeText(SelectCountyActivity.this, "请选择县区", Toast.LENGTH_SHORT).show();
-                } else if (currentLevel == COUNTYLEVEL){
+                } else if (currentLevel == COUNTY_LEVEL){
                     Bundle bundle = new Bundle();
                     bundle.putString("County",selected);
                     bundle.putBoolean("AddCounty",true);

@@ -346,8 +346,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        saveCities();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
+        saveCities();
         super.onDestroy();
+    }
+
+    public void saveCities(){
         SharedPreferences.Editor editor = pref.edit();
         String cityXml = SharedPreferencesUtils.List2String(cities);
         editor.putString("City",cityXml);

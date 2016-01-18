@@ -9,7 +9,7 @@
         <item
             android:id="@+id/manageCity"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="管理城市" />
+            android:title="删除城市" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

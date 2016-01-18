@@ -57,7 +57,7 @@ public class ManageCountyActivity extends Activity {
         AdapterView.AdapterContextMenuInfo info =  (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         switch (item.getItemId()){
             case Menu.FIRST:
-                Toast.makeText(ManageCountyActivity.this,adapter.getItem(info.position),Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageCountyActivity.this,"删除 " + adapter.getItem(info.position),Toast.LENGTH_SHORT).show();
                 cities.remove(info.position);
                 adapter.notifyDataSetChanged();
                 break;
