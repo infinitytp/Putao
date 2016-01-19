@@ -153,9 +153,11 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.addCity) {
             // Handle the camera action
+            item.setCheckable(false);
             Intent intent = new Intent(MainActivity.this,SelectCountyActivity.class);
             startActivityForResult(intent, SELECT_COUNTY_REQUEST_CODE);
         } else if (id == R.id.manageCity) {
+            item.setCheckable(false);
             Intent intent = new Intent(MainActivity.this,ManageCountyActivity.class);
             intent.putExtra("Cities",SharedPreferencesUtils.List2String(cities));
             startActivityForResult(intent, MANAGE_COUNTY_REQUEST_CODE);

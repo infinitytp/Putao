@@ -98,9 +98,4 @@ public class WeatherFragment extends Fragment {
             return view;
         }
     }
-
-    public String getCity(){
-        return city;
-    }
-
 }

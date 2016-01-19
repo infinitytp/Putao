@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class SelectCountyActivity extends Activity {
     private int currentLevel = 0;
     private String selected;
     private String province,city,county;
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +39,14 @@ public class SelectCountyActivity extends Activity {
         selectCountyTip = (TextView) findViewById(R.id.selectCountyTip);
         tvTip = (TextView) findViewById(R.id.tvTip);
         btn = (Button) findViewById(R.id.btn);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
         final Intent intent = getIntent();
         final WeatherDB weatherDB = WeatherDB.getInstance(this);
         dataList = weatherDB.getProvinces();
         final MyAdapter myAdapter = new MyAdapter(SelectCountyActivity.this,R.layout.gridviewitem,dataList);
         gridView.setAdapter(myAdapter);
+        gridView.setMinimumHeight(relativeLayout.getHeight()/2);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -99,9 +103,9 @@ public class SelectCountyActivity extends Activity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = LayoutInflater.from(getContext()).inflate(resourceId,null);
-            String str = dataList.get(position);
+            String city = dataList.get(position);
             TextView tv = (TextView) view.findViewById(R.id.gridItemTv);
-            tv.setText(str);
+            tv.setText(city);
             return view;
         }
     }
