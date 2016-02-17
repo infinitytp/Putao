@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,7 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String WEATHERADDRESS = "http://wthrcdn.etouch.cn/WeatherApi?city=";
+    private static final String WEATHER_ADDRESS = "http://wthrcdn.etouch.cn/WeatherApi?city=";
     private static final String GeoUrl = "http://api.map.baidu.com/geocoder/v2/?" +
             "ak=wwGMxI8Y2yG2nUxVfZ47MzO3&mcode=" +
             "8B:38:41:67:23:C7:A9:11:AB:E2:57:BC:6F:15:CF:6B:B3:AE:EF:C2;com.song.networktest" +
@@ -58,15 +57,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -80,7 +70,6 @@ public class MainActivity extends AppCompatActivity
         fragments = new ArrayList<>();
         weatherDB = WeatherDB.getInstance(this);
         weatherDB.init();
-
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
@@ -110,7 +99,6 @@ public class MainActivity extends AppCompatActivity
         myHandler = new MyHandler();
         Message msg = myHandler.obtainMessage();
         myHandler.handleMessage(msg);
-
     }
 
     @Override
@@ -161,8 +149,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this,ManageCountyActivity.class);
             intent.putExtra("Cities",SharedPreferencesUtils.List2String(cities));
             startActivityForResult(intent, MANAGE_COUNTY_REQUEST_CODE);
-        } else if (id == R.id.nav_slideshow) {
-
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -218,12 +204,14 @@ public class MainActivity extends AppCompatActivity
         cityName = callBack.getCityName();
         return cityName;
     }
-
+    /**
+     * 连接到万年历天气api;
+     * */
     public void connectWeatherSite(String city){
         try {
             if (city!=null){
                 city = URLEncoder.encode(city,"utf-8");
-                String address = WEATHERADDRESS + city;
+                String address = WEATHER_ADDRESS + city;
                 HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {
