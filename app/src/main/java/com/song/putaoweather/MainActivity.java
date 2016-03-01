@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         myHandler = new MyHandler();
-        Message msg = myHandler.obtainMessage();
-        myHandler.handleMessage(msg);
     }
 
     @Override
