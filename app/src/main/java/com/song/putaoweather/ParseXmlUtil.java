@@ -101,13 +101,13 @@ public class ParseXmlUtil {
                             weather = new Weather();
                         }
                         if (tagName!=null && tagName.equals("date_1") && weather!=null){
-                            weather.setDate(xmlPullParser.nextText());
+                            weather.setDate(xmlPullParser.nextText().split("日")[1]);
                         }
                         if (tagName!=null && tagName.equals("high_1") && weather!=null){
-                            weather.setHigh(xmlPullParser.nextText());
+                            weather.setHigh(xmlPullParser.nextText().split("温")[1]);
                         }
                         if (tagName!=null && tagName.equals("low_1") && weather!=null){
-                            weather.setLow(xmlPullParser.nextText());
+                            weather.setLow(xmlPullParser.nextText().split("温")[1]);
                         }
                         if (tagName!=null && tagName.equals("type_1")){
                             type = xmlPullParser.nextText();
@@ -122,13 +122,13 @@ public class ParseXmlUtil {
                             weather = new Weather();
                         }
                         if (tagName!=null && tagName.equals("date") && weather!=null){
-                            weather.setDate(xmlPullParser.nextText());
+                            weather.setDate(xmlPullParser.nextText().split("日")[1]);
                         }
                         if (tagName!=null && tagName.equals("high") && weather!=null){
-                            weather.setHigh(xmlPullParser.nextText());
+                            weather.setHigh(xmlPullParser.nextText().split("温")[1]);
                         }
                         if (tagName!=null && tagName.equals("low") && weather!=null){
-                            weather.setLow(xmlPullParser.nextText());
+                            weather.setLow(xmlPullParser.nextText().split("温")[1]);
                         }
                         if (tagName!=null && tagName.equals("type")){
                             type = xmlPullParser.nextText();

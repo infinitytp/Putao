@@ -9,11 +9,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="日期"
+        android:textSize="20sp"
         android:textColor="#4CAF50"
         android:id="@+id/dateId"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:minHeight="40dp" />
+        android:minHeight="47dp"
+        android:paddingLeft="25dp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -25,18 +27,20 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="高温"
+            android:textSize="20sp"
             android:textColor="#4CAF50"
             android:id="@+id/highTemperature"
             android:layout_weight="1"
-            android:gravity="center_vertical|right" />
+            android:gravity="center_vertical|center_horizontal" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="低温"
+            android:textSize="15sp"
             android:textColor="#4CAF50"
             android:id="@+id/lowTemperature"
             android:layout_weight="1"
-            android:gravity="center_vertical|right" />
+            android:gravity="center_vertical|center_horizontal" />
     </LinearLayout>
 </LinearLayout>

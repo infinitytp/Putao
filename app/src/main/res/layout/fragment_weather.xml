@@ -76,7 +76,8 @@
                         android:id="@+id/liveWindPower"
                         android:layout_weight="1"
                         android:textSize="15sp"
-                        android:gravity="center|left" />
+                        android:gravity="center|left"
+                        android:paddingLeft="30dp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -86,7 +87,8 @@
                         android:id="@+id/liveWindDirection"
                         android:layout_weight="1"
                         android:textSize="15sp"
-                        android:gravity="center|left" />
+                        android:gravity="center|left"
+                        android:paddingLeft="30dp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -96,7 +98,8 @@
                         android:id="@+id/liveHumidity"
                         android:layout_weight="1"
                         android:textSize="15sp"
-                        android:gravity="center|left" />
+                        android:gravity="center|left"
+                        android:paddingLeft="30dp" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

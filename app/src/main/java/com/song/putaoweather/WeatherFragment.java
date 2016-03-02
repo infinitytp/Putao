@@ -67,9 +67,9 @@ public class WeatherFragment extends Fragment {
     public void refreshLiveWeather(WeatherLive weatherLive){
         cityLive.setText(weatherLive.getCity());
         liveTemperature.setText(weatherLive.getWendu() + "℃");
-        liveWindPower.setText("风力:" + weatherLive.getFengli());
-        liveWindDirection.setText("风向:" + weatherLive.getFengxiang());
-        liveHumidity.setText("湿度:" + weatherLive.getShidu());
+        liveWindPower.setText("风力:    " + weatherLive.getFengli());
+        liveWindDirection.setText("风向:    " + weatherLive.getFengxiang());
+        liveHumidity.setText("湿度:    " + weatherLive.getShidu());
     }
 
     public void refreshWeather(List<Weather> weatherList){
