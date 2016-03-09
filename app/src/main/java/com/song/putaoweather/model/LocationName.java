@@ -1,9 +1,9 @@
-package com.song.putaoweather;
+package com.song.putaoweather.model;
 
 /**
  * Created by SongPc on 2016/1/8.
  */
-public class LocationId {
+public class LocationName {
     private String countyId;
     private String county;
     private String cityId;

@@ -1,4 +1,4 @@
-package com.song.putaoweather;
+package com.song.putaoweather.model;
 
 /**
  * Created by SongPc on 2015/12/28.

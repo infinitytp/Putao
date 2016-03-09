@@ -1,4 +1,4 @@
-package com.song.putaoweather;
+package com.song.putaoweather.weatherDAO;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by SongPc on 2016/1/8.
  */
 public class WeatherSqlOpenHelper extends SQLiteOpenHelper {
-    private static final String CREATE_WEATHERDATABASE = "create table location("
+    private static final String CREATE_WEATHER_DATABASE = "create table location("
             + "id integer primary key autoincrement,"
             + "countyId text,"
             + "county text,"
@@ -27,6 +27,6 @@ public class WeatherSqlOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_WEATHERDATABASE);
+        db.execSQL(CREATE_WEATHER_DATABASE);
     }
 }

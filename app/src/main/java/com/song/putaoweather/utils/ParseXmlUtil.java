@@ -1,4 +1,7 @@
-package com.song.putaoweather;
+package com.song.putaoweather.utils;
+
+import com.song.putaoweather.model.Weather;
+import com.song.putaoweather.model.WeatherLive;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

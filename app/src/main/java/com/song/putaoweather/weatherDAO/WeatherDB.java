@@ -1,10 +1,13 @@
-package com.song.putaoweather;
+package com.song.putaoweather.weatherDAO;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.song.putaoweather.model.LocationList;
+import com.song.putaoweather.model.LocationName;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +16,7 @@ import java.util.List;
 /**
  * Created by SongPc on 2016/1/8.
  */
-public class WeatherDB {
+public class WeatherDB implements WeatherDBInterface{
 
     public static final String DB_NAME = "Weather";
 
@@ -21,7 +24,7 @@ public class WeatherDB {
     private Context myContext;
     private SQLiteDatabase sqlDB;
     public static WeatherDB weatherDB;
-    private List<LocationId> list;
+    private List<LocationName> list;
 
     public WeatherDB(Context context){
         WeatherSqlOpenHelper sqlOpenHelper = new WeatherSqlOpenHelper(context,DB_NAME,null,VERSION);
@@ -47,10 +50,10 @@ public class WeatherDB {
         } else {
             list = new LocationList(myContext).getLocationList();
             Log.d("Tag","数据库初始化");
-            Iterator<LocationId> iterator = list.iterator();
+            Iterator<LocationName> iterator = list.iterator();
             sqlDB.beginTransaction();
             while (iterator.hasNext()){
-                LocationId id = iterator.next();
+                LocationName id = iterator.next();
                 ContentValues values = new ContentValues();
                 values.put("countyId",id.getCountyId());
                 values.put("county",id.getCounty());

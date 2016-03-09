@@ -4,7 +4,6 @@ package com.song.putaoweather;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.song.putaoweather.model.Weather;
+import com.song.putaoweather.model.WeatherLive;
+import com.song.putaoweather.utils.ParseXmlUtil;
+
 import java.util.List;
-import java.util.zip.Inflater;
 
 
 /**

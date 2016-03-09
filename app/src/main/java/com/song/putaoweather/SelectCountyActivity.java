@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.song.putaoweather.weatherDAO.WeatherDB;
+
 import java.util.List;
 
 public class SelectCountyActivity extends Activity {

@@ -1,8 +1,9 @@
-package com.song.putaoweather;
+package com.song.putaoweather.model;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
+
+import com.song.putaoweather.model.LocationName;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,11 +23,11 @@ public class LocationList {
 
     public LocationList(Context context){this.context = context;}
 
-    public List<LocationId> getLocationList(){
+    public List<LocationName> getLocationList(){
         AssetManager am;
         InputStream is = null;
         BufferedReader br = null;
-        List<LocationId> list = new ArrayList<>();
+        List<LocationName> list = new ArrayList<>();
         String line;
 
         try {
@@ -35,7 +36,7 @@ public class LocationList {
             br = new BufferedReader(new InputStreamReader(is,ENCODING));
             while ((line = br.readLine())!=null){
                 String[] oneLine = line.split(",");
-                LocationId id = new LocationId();
+                LocationName id = new LocationName();
                 id.setCountyId(oneLine[0]);
                 id.setCounty(oneLine[1]);
                 id.setCityId(oneLine[2]);

@@ -1,18 +1,12 @@
 package com.song.putaoweather;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,10 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import com.song.putaoweather.service.LocalCity;
+import com.song.putaoweather.service.WeatherInfo;
+import com.song.putaoweather.utils.SharedPreferencesUtils;
+import com.song.putaoweather.weatherDAO.WeatherDB;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,13 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String WEATHER_ADDRESS = "http://wthrcdn.etouch.cn/WeatherApi?city=";
-    private static final String GeoUrl = "http://api.map.baidu.com/geocoder/v2/?" +
-            "ak=wwGMxI8Y2yG2nUxVfZ47MzO3&mcode=" +
-            "8B:38:41:67:23:C7:A9:11:AB:E2:57:BC:6F:15:CF:6B:B3:AE:EF:C2;com.song.networktest" +
-            "&output=xml&pois=1&callback=renderReverse&location=";
     private MyHandler myHandler;
-    private String  city = null;
     private SharedPreferences pref;
     private WeatherDB weatherDB;
     private ViewPager viewPager;
@@ -49,6 +39,8 @@ public class MainActivity extends AppCompatActivity
     private static final int SELECT_COUNTY_REQUEST_CODE = 1;
     private static final int MANAGE_COUNTY_REQUEST_CODE = 2;
     private MyFragmentAdapter adapter;
+    private LocalCity localCity;
+    private WeatherInfo weatherInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,24 +66,27 @@ public class MainActivity extends AppCompatActivity
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
         if (remember){
-            cities = SharedPreferencesUtils.String2List(pref.getString("City",""));
+            cities = SharedPreferencesUtils.String2List(pref.getString("City", ""));
+            weatherInfo = new WeatherInfo(cities);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (String city:cities){
-                        connectWeatherSite(city);
-                    }
+                    weatherInfo.getWeatherForCities(myHandler);
                 }
             }).start();
         } else {
+            localCity = new LocalCity(this);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Location location = getLocation();
-                    city = getCityFromBaidu(location);
-                    if (city!=null){
-                        connectWeatherSite(city);
-                    }
+                    String city = localCity.getCity();
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("rememberLocation",true);
+                    editor.putString("Location", city);
+                    cities.add(city);
+                    editor.commit();
+                    weatherInfo = new WeatherInfo(cities);
+                    weatherInfo.getWeatherForCities(myHandler);
                 }
             }).start();
         }
@@ -159,77 +154,11 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    /**
-     * 拿到本机所在经纬度;
-     * */
-    public Location getLocation(){
-        Location location = null;
-        String provider;
 
-        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        List<String> providersList = manager.getProviders(true);
-        if (providersList.contains(LocationManager.GPS_PROVIDER)){
-            provider = LocationManager.GPS_PROVIDER;
-        } else if (providersList.contains(LocationManager.NETWORK_PROVIDER)){
-            provider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            Toast.makeText(MainActivity.this,"没有可用的GPS",Toast.LENGTH_SHORT).show();
-            provider = null;
-        }
-
-        try {
-            if (provider!=null){
-                location = manager.getLastKnownLocation(provider);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-        return location;
-    }
 
     /**
-     * 连接百度GEOAPI，得到城市名称;
-    * */
-    public String getCityFromBaidu(Location location){
-        String cityName;
-        String cityLocation = "";
-        if (location!=null){
-            cityLocation = location.getLatitude() + "," + location.getLongitude();
-        }
-        String address = GeoUrl + cityLocation;
-        MyHttpCallBack callBack = new MyHttpCallBack();
-        HttpUtil.sendHttpRequest(address,callBack);
-        cityName = callBack.getCityName();
-        return cityName;
-    }
-    /**
-     * 连接到万年历天气api;
-     * */
-    public void connectWeatherSite(String city){
-        try {
-            if (city!=null){
-                city = URLEncoder.encode(city,"utf-8");
-                String address = WEATHER_ADDRESS + city;
-                HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
-                    @Override
-                    public void onFinish(String response) {
-                        Message msg = myHandler.obtainMessage();
-                        msg.what = 1;
-                        msg.obj = response;
-                        myHandler.sendMessage(msg);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
+     * 获取天气信息，并且传给Fragments；
+     */
     private class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
@@ -250,29 +179,6 @@ public class MainActivity extends AppCompatActivity
                     super.handleMessage(msg);
                     break;
             }
-        }
-    }
-
-    private class MyHttpCallBack implements HttpCallbackListener{
-        private String cityName;
-
-        @Override
-        public void onFinish(String response) {
-            cityName = ParseXmlUtil.getLocationCity(response);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("rememberLocation",true);
-            editor.putString("Location",cityName);
-            cities.add(cityName);
-            editor.commit();
-        }
-
-        @Override
-        public void onError(Exception e) {
-
-        }
-
-        public String getCityName(){
-            return cityName;
         }
     }
 
@@ -311,11 +217,11 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         if (addCounty){
-            final String county = cities.get(cities.size()-1);
+            final String city = cities.get(cities.size()-1);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connectWeatherSite(county);
+                    weatherInfo.getWeatherForSingleCity(city, myHandler);
                 }
             }).start();
             addCounty = false;
@@ -345,6 +251,9 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+    /**
+     * 保存城市列表到SharedPreferences；
+     */
     public void saveCities(){
         SharedPreferences.Editor editor = pref.edit();
         String cityXml = SharedPreferencesUtils.List2String(cities);
