@@ -1,5 +1,6 @@
 package com.song.putaoweather;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,13 +14,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.song.putaoweather.service.LocalCity;
 import com.song.putaoweather.service.WeatherInfo;
+import com.song.putaoweather.utils.HttpCallbackListener;
+import com.song.putaoweather.utils.ParseXmlUtil;
 import com.song.putaoweather.utils.SharedPreferencesUtils;
 import com.song.putaoweather.weatherDAO.WeatherDB;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private MyFragmentAdapter adapter;
     private LocalCity localCity;
     private WeatherInfo weatherInfo;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +127,36 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_locate) {
+            Log.d("Tag", "Action_locate");
+            dialog = new ProgressDialog(this);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage("正在定位");
+            dialog.setIndeterminate(false);
+            dialog.setCancelable(true);
+            dialog.show();
+            final LocalCity localCity = new LocalCity(this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    localCity.getCity(new HttpCallbackListener() {
+                        @Override
+                        public void onFinish(String response) {
+                            String city = ParseXmlUtil.getLocationCity(response);
+                            Message msg = myHandler.obtainMessage();
+                            msg.what = 2;
+                            msg.obj = city;
+                            myHandler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                }
+            }).start();
+
             return true;
         }
 
@@ -142,7 +179,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this,ManageCountyActivity.class);
             intent.putExtra("Cities",SharedPreferencesUtils.List2String(cities));
             startActivityForResult(intent, MANAGE_COUNTY_REQUEST_CODE);
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_share) {
 
@@ -175,6 +212,23 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     break;
+                case 2:
+                    final String city = (String)msg.obj;
+                    if (cities.contains(city)){
+                        Toast.makeText(MainActivity.this,"当前城市: " + city,Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+                    } else {
+                        Toast.makeText(MainActivity.this,"当前位置: " + city,Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+                        cities.add(city);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                weatherInfo.getWeatherForSingleCity(city,myHandler);
+                            }
+                        }).start();
+
+                    }
                 default:
                     super.handleMessage(msg);
                     break;

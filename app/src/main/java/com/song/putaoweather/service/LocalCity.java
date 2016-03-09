@@ -73,6 +73,17 @@ public class LocalCity implements LocationInterface{
         return city;
     }
 
+    public boolean getCity(HttpCallbackListener myCallback){
+        Location location = getLocation();
+        String cityLocation = "";
+        if(location!=null){
+            cityLocation = location.getLatitude() + "," + location.getLongitude();
+        }
+        String address = GeoUrl + cityLocation;
+        HttpUtil.sendHttpRequest(address,myCallback);
+        return true;
+    }
+
     private class MyCallback implements HttpCallbackListener{
         private String cityName;
         @Override
