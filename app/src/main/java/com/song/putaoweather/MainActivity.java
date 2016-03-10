@@ -3,6 +3,7 @@ package com.song.putaoweather;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -128,7 +129,6 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_locate) {
-            Log.d("Tag", "Action_locate");
             dialog = new ProgressDialog(this);
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.setMessage("正在定位");
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * 获取天气信息，并且传给Fragments；
      */
-    private class MyHandler extends Handler{
+    class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -210,7 +210,6 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         adapter.notifyDataSetChanged();
                     }
-
                     break;
                 case 2:
                     final String city = (String)msg.obj;
