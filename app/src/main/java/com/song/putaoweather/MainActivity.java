@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.song.putaoweather.service.LocalCity;
+import com.song.putaoweather.service.OneKeyShareForWeather;
 import com.song.putaoweather.service.WeatherInfo;
 import com.song.putaoweather.utils.HttpCallbackListener;
 import com.song.putaoweather.utils.ParseXmlUtil;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     private LocalCity localCity;
     private WeatherInfo weatherInfo;
     private ProgressDialog dialog;
+    private OneKeyShareForWeather shareForWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,7 +184,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_share) {
-
+            shareForWeather = new OneKeyShareForWeather(MainActivity.this);
+            shareForWeather.share();
         } else if (id == R.id.nav_send) {
 
         }
@@ -219,7 +222,9 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         Toast.makeText(MainActivity.this,"当前位置: " + city,Toast.LENGTH_SHORT).show();
                         dialog.hide();
-                        cities.add(city);
+                        if ((!city.equals(""))&& city!=null){
+                            cities.add(city);
+                        }
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
