@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.song.putaoweather.service.BaiduMapLBS;
 import com.song.putaoweather.service.LocalCity;
 import com.song.putaoweather.service.OneKeyShareForWeather;
 import com.song.putaoweather.service.WeatherInfo;
@@ -137,27 +138,30 @@ public class MainActivity extends AppCompatActivity
             dialog.setIndeterminate(false);
             dialog.setCancelable(true);
             dialog.show();
-            final LocalCity localCity = new LocalCity(this);
-            new Thread(new Runnable() {
+
+            BaiduMapLBS mapLBS = new BaiduMapLBS(MainActivity.this);
+            mapLBS.getCity(new BaiduMapLBS.BaiduMapResponse() {
                 @Override
-                public void run() {
-                    localCity.getCity(new HttpCallbackListener() {
-                        @Override
-                        public void onFinish(String response) {
-                            String city = ParseXmlUtil.getLocationCity(response);
-                            Message msg = myHandler.obtainMessage();
-                            msg.what = 2;
-                            msg.obj = city;
-                            myHandler.sendMessage(msg);
+                public void onResponse(String city) {
+                    final String location = city;
+                    if (cities.contains(city)) {
+                        Toast.makeText(MainActivity.this, "当前城市: " + city, Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+                    } else {
+                        Toast.makeText(MainActivity.this, "当前位置: " + city, Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+                        if ((!city.equals("")) && city != null) {
+                            cities.add(city);
                         }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                weatherInfo.getWeatherForSingleCity(location, myHandler);
+                            }
+                        }).start();
+                    }
                 }
-            }).start();
+            });
 
             return true;
         }
@@ -214,25 +218,6 @@ public class MainActivity extends AppCompatActivity
                         adapter.notifyDataSetChanged();
                     }
                     break;
-                case 2:
-                    final String city = (String)msg.obj;
-                    if (cities.contains(city)){
-                        Toast.makeText(MainActivity.this,"当前城市: " + city,Toast.LENGTH_SHORT).show();
-                        dialog.hide();
-                    } else {
-                        Toast.makeText(MainActivity.this,"当前位置: " + city,Toast.LENGTH_SHORT).show();
-                        dialog.hide();
-                        if ((!city.equals(""))&& city!=null){
-                            cities.add(city);
-                        }
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                weatherInfo.getWeatherForSingleCity(city,myHandler);
-                            }
-                        }).start();
-
-                    }
                 default:
                     super.handleMessage(msg);
                     break;
