@@ -4,10 +4,12 @@ package com.song.putaoweather;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +27,8 @@ public class WeatherFragment extends Fragment {
     private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
     private ListView listView;
     private static String city;
+    private GridView gridViewfordays;
+    private TemperatureView myTempView;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -52,6 +56,7 @@ public class WeatherFragment extends Fragment {
         List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(response);
         refreshLiveWeather(weatherLive);
         liveType.setText(weatherList.get(1).getDayType());
+        myTempView.setWeatherList(weatherList);
         refreshWeather(weatherList);
         return view;
     }
@@ -64,6 +69,8 @@ public class WeatherFragment extends Fragment {
         liveWindDirection = (TextView) view.findViewById(R.id.liveWindDirection);
         liveHumidity = (TextView) view.findViewById(R.id.liveHumidity);
         listView = (ListView) view.findViewById(R.id.weatherListView);
+        gridViewfordays = (GridView) view.findViewById(R.id.girdViewfordays);
+        myTempView = (TemperatureView) view.findViewById(R.id.myTempView);
     }
 
     public void refreshLiveWeather(WeatherLive weatherLive){
@@ -77,6 +84,8 @@ public class WeatherFragment extends Fragment {
     public void refreshWeather(List<Weather> weatherList){
         MyAdapter adapter = new MyAdapter(getContext(),R.layout.weatheritem,weatherList);
         listView.setAdapter(adapter);
+        MyGridAdpater gridAdpater = new MyGridAdpater(getContext(),R.layout.weatheritemforgird,weatherList);
+        gridViewfordays.setAdapter(gridAdpater);
     }
 
     private class MyAdapter extends ArrayAdapter<Weather>{
@@ -98,6 +107,43 @@ public class WeatherFragment extends Fragment {
             high.setText(weather.getHigh());
             low.setText(weather.getLow());
             return view;
+        }
+    }
+
+    private class MyGridAdpater extends ArrayAdapter<Weather>{
+        private int resourcedId;
+
+        public MyGridAdpater(Context context, int resource, List<Weather> objects) {
+            super(context, resource, objects);
+            this.resourcedId = resource;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Weather weather = getItem(position);
+            ViewHolder holder;
+            View view;
+            if (convertView == null){
+                view = LayoutInflater.from(getContext()).inflate(resourcedId,null);
+                holder = new ViewHolder(view);
+                view.setTag(holder);
+            } else {
+                view = convertView;
+                holder = (ViewHolder) view.getTag();
+            }
+            holder.typeIdGrid.setText(weather.getDayType());
+            holder.dateIdGrid.setText(weather.getDate());
+            return view;
+        }
+    }
+
+    private class ViewHolder{
+        public TextView dateIdGrid;
+        public TextView typeIdGrid;
+
+        public ViewHolder(View view){
+            dateIdGrid = (TextView) view.findViewById(R.id.dateIdGrid);
+            typeIdGrid = (TextView) view.findViewById(R.id.typeIdGrid);
         }
     }
 }
