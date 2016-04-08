@@ -20,8 +20,6 @@ public class ManageCountyActivity extends Activity {
     private ListView cityListView;
     private ArrayAdapter<String> adapter;
     private List<String> cities;
-    private int position;
-    private String county;
     private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

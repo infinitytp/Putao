@@ -8,7 +8,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 
-import java.util.IllegalFormatCodePointException;
 
 /**
  * Created by SongPc on 2016-03-23.
