@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
 
     private MyHandler myHandler;
     private SharedPreferences pref;
-    private WeatherDB weatherDB;
+    public  WeatherDB weatherDB;
     private ViewPager viewPager;
     private ArrayList<WeatherFragment> fragments;
     private List<String> cities = new ArrayList<>();
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         fragments = new ArrayList<>();
         weatherDB = WeatherDB.getInstance(this);
-        weatherDB.init();
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean remember = pref.getBoolean("rememberLocation",false);
@@ -99,6 +98,7 @@ public class MainActivity extends AppCompatActivity
                     editor.commit();
                     weatherInfo = new WeatherInfo(cities);
                     weatherInfo.getWeatherForCities(myHandler);
+                    saveCities();
                 }
             }).start();
         }

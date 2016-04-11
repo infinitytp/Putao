@@ -3,136 +3,129 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.song.putaoweather.WeatherFragment">
-    <ScrollView
+
+    <RelativeLayout
+        android:background="#4CAF50"
+        android:id="@+id/liveRL"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:background="#FFFFFF"
-            android:orientation="vertical"
+
+        <TextView
+            android:id="@+id/cityLive"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="莆田"
+            android:layout_margin="15dp"
+            android:textColor="#FFFFFF"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="50sp"
+            android:gravity="center" />
 
-            <RelativeLayout
-                android:background="#4CAF50"
-                android:id="@+id/liveRL"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                >
+        <TextView
+            android:id="@+id/liveType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="多云"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/cityLive"
+            android:layout_toLeftOf="@+id/smalltV" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="莆田"
-                    android:textColor="#FFFFFF"
-                    android:id="@+id/cityLive"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="50sp"
-                    android:gravity="center" />
+        <TextView
+            android:id="@+id/liveTemperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15度"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:textSize="30sp"
+            android:layout_below="@+id/liveType"
+            android:layout_alignEnd="@+id/liveType"
+            android:layout_alignRight="@+id/liveType"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"/>
 
-                <LinearLayout
-                    android:layout_below="@+id/cityLive"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="风力"
+            android:textColor="#FFFFFF"
+            android:id="@+id/liveWindPower"
+            android:textSize="15sp"
+            android:gravity="left|center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/smalltV"
+            android:layout_alignBottom="@+id/liveTemperature" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="多云"
-                            android:textColor="#FFFFFF"
-                            android:id="@+id/liveType"
-                            android:layout_weight="1"
-                            android:textSize="30sp"
-                            android:gravity="center" />
+        <TextView
+            android:id="@+id/liveWindDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="风向"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="30dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_below="@+id/cityLive"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/smalltV" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="15度"
-                            android:textColor="#FFFFFF"
-                            android:id="@+id/liveTemperature"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textSize="30sp" />
-                    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="湿度"
+            android:textColor="#FFFFFF"
+            android:id="@+id/liveHumidity"
+            android:textSize="15sp"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:paddingLeft="30dp"
+            android:layout_below="@+id/liveWindDirection"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/smalltV"
+            android:layout_above="@+id/liveWindPower" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/smalltV"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/cityLive"
+            android:layout_alignBaseline="@+id/liveTemperature" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="风力"
-                            android:textColor="#FFFFFF"
-                            android:id="@+id/liveWindPower"
-                            android:layout_weight="1"
-                            android:textSize="15sp"
-                            android:gravity="center|left"
-                            android:paddingLeft="30dp" />
+        <GridView
+            android:id="@+id/girdViewfordays"
+            android:layout_below="@+id/liveTemperature"
+            android:background="#4CAF50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="6">
+        </GridView>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="风向"
-                            android:textColor="#FFFFFF"
-                            android:id="@+id/liveWindDirection"
-                            android:layout_weight="1"
-                            android:textSize="15sp"
-                            android:gravity="center|left"
-                            android:paddingLeft="30dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="湿度"
-                            android:textColor="#FFFFFF"
-                            android:id="@+id/liveHumidity"
-                            android:layout_weight="1"
-                            android:textSize="15sp"
-                            android:gravity="center|left"
-                            android:paddingLeft="30dp" />
-                    </LinearLayout>
-                </LinearLayout>
+        <com.song.putaoweather.TemperatureView
+            android:id="@+id/myTempView"
+            android:layout_below="@+id/girdViewfordays"
+            android:background="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
             </RelativeLayout>
-
-            <GridView
-                android:id="@+id/girdViewfordays"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:numColumns="6">
-
-            </GridView>
-
-            <ListView
-                android:background="#FFFFFF"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.63"
-                android:id="@+id/weatherListView"
-                android:dividerHeight="1dp"
-                android:layout_marginTop="30dp" />
-
-            <com.song.putaoweather.TemperatureView
-                android:id="@+id/myTempView"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-    </ScrollView>
 
     <!-- TODO: Update blank fragment layout -->
 

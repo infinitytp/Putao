@@ -17,6 +17,12 @@ public class WeatherSqlOpenHelper extends SQLiteOpenHelper {
             + "provinceId text,"
             + "province text)";
 
+    private static final String CREATE_WEATHER_TYPE = "create table weatherType(" +
+            "code integer primary key," +
+            "cn_name text," +
+            "en_name text," +
+            "filepath text)";
+
     public WeatherSqlOpenHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version){
         super(context,name,factory,version);
     }
@@ -28,5 +34,6 @@ public class WeatherSqlOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_WEATHER_DATABASE);
+        db.execSQL(CREATE_WEATHER_TYPE);
     }
 }

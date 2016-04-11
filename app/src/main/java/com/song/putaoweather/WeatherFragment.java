@@ -5,17 +5,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.song.putaoweather.model.Weather;
 import com.song.putaoweather.model.WeatherLive;
 import com.song.putaoweather.utils.ParseXmlUtil;
+import com.song.putaoweather.weatherDAO.WeatherDB;
 
 import java.util.List;
 
@@ -25,10 +29,10 @@ import java.util.List;
  */
 public class WeatherFragment extends Fragment {
     private TextView cityLive,liveType,liveTemperature,liveWindPower,liveWindDirection,liveHumidity;
-    private ListView listView;
     private static String city;
     private GridView gridViewfordays;
     private TemperatureView myTempView;
+    private RelativeLayout liveRL;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -40,7 +44,7 @@ public class WeatherFragment extends Fragment {
         bundle.putString("Response", response);
         WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(response);
         city = weatherLive.getCity();
-        bundle.putString("City",city);
+        bundle.putString("City", city);
         wf.setArguments(bundle);
         return wf;
     }
@@ -68,9 +72,9 @@ public class WeatherFragment extends Fragment {
         liveWindPower = (TextView) view.findViewById(R.id.liveWindPower);
         liveWindDirection = (TextView) view.findViewById(R.id.liveWindDirection);
         liveHumidity = (TextView) view.findViewById(R.id.liveHumidity);
-        listView = (ListView) view.findViewById(R.id.weatherListView);
         gridViewfordays = (GridView) view.findViewById(R.id.girdViewfordays);
         myTempView = (TemperatureView) view.findViewById(R.id.myTempView);
+        liveRL = (RelativeLayout) view.findViewById(R.id.liveRL);
     }
 
     public void refreshLiveWeather(WeatherLive weatherLive){
@@ -82,8 +86,6 @@ public class WeatherFragment extends Fragment {
     }
 
     public void refreshWeather(List<Weather> weatherList){
-        MyAdapter adapter = new MyAdapter(getContext(),R.layout.weatheritem,weatherList);
-        listView.setAdapter(adapter);
         MyGridAdpater gridAdpater = new MyGridAdpater(getContext(),R.layout.weatheritemforgird,weatherList);
         gridViewfordays.setAdapter(gridAdpater);
     }
@@ -112,10 +114,12 @@ public class WeatherFragment extends Fragment {
 
     private class MyGridAdpater extends ArrayAdapter<Weather>{
         private int resourcedId;
+        private WeatherDB myWeatherDB;
 
         public MyGridAdpater(Context context, int resource, List<Weather> objects) {
             super(context, resource, objects);
             this.resourcedId = resource;
+            myWeatherDB = WeatherDB.getInstance(context);
         }
 
         @Override
@@ -133,6 +137,10 @@ public class WeatherFragment extends Fragment {
             }
             holder.typeIdGrid.setText(weather.getDayType());
             holder.dateIdGrid.setText(weather.getDate());
+            holder.imageView.setMaxHeight(holder.dateIdGrid.getMeasuredHeight());
+            holder.imageView.setMaxWidth(holder.dateIdGrid.getMeasuredWidth());
+            int imageId = myWeatherDB.getImageId(weather.getDayType());
+            holder.imageView.setImageResource(imageId);
             return view;
         }
     }
@@ -140,10 +148,12 @@ public class WeatherFragment extends Fragment {
     private class ViewHolder{
         public TextView dateIdGrid;
         public TextView typeIdGrid;
+        public ImageView imageView;
 
         public ViewHolder(View view){
             dateIdGrid = (TextView) view.findViewById(R.id.dateIdGrid);
             typeIdGrid = (TextView) view.findViewById(R.id.typeIdGrid);
+            imageView = (ImageView) view.findViewById(R.id.imageQingceshi);
         }
     }
 }

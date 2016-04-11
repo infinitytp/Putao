@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.song.putaoweather.model.Weather;
 
@@ -36,9 +37,8 @@ public class TemperatureView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(Color.BLUE);
+        mPaint.setColor(Color.rgb(76, 175, 80));
         canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
-        Log.d("Tag", " Width:" + String.valueOf(getWidth()) + "; Height: " + String.valueOf(getHeight()));
         mPaint.setColor(Color.YELLOW);
         int size = getMax(dayTemp) - getMin(nightTemp) + 3;
         int nightMin = getMin(nightTemp);
@@ -50,7 +50,6 @@ public class TemperatureView extends View {
     public void setWeatherList(List<Weather> list){
         this.weatherList = list;
         for (int i=0;i<list.size();i++){
-            Log.d("Tag",list.get(i).getHigh());
             dayTemp[i] = Integer.parseInt(list.get(i).getHigh().replace("℃","").trim());
             nightTemp[i] = Integer.parseInt(list.get(i).getLow().replace("℃","").trim());
         }
@@ -84,7 +83,7 @@ public class TemperatureView extends View {
 
         for (int i=0;i<a.length;i++){
             Map<String,Float> map = new HashMap<>();
-            float x = (float)getWidth()/7 * (i+1);
+            float x = (float)(getWidth()/6 *(i+1) - getWidth()/12);
             float y = (float)getHeight() - (float)getHeight()/size * (a[i] - min + 1f);
             canvas.drawCircle(x, y, 10, paint);
             map.put("x", x);
@@ -112,4 +111,15 @@ public class TemperatureView extends View {
         }
 
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(widthSize,heightSize);
+
+    }
+
+
 }

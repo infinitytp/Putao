@@ -30,6 +30,8 @@ public class WeatherDB implements WeatherDBInterface{
         WeatherSqlOpenHelper sqlOpenHelper = new WeatherSqlOpenHelper(context,DB_NAME,null,VERSION);
         sqlDB = sqlOpenHelper.getWritableDatabase();
         myContext = context;
+        writeWeatherType();
+        init();
     }
 
     public synchronized static WeatherDB getInstance(Context context){
@@ -71,6 +73,63 @@ public class WeatherDB implements WeatherDBInterface{
         }
     }
 
+    public void writeWeatherType(){
+        if (sqlDB.query("location",null,null,null,null,null,null).getCount()>0){
+            return;
+        } else {
+            sqlDB.beginTransaction();
+            sqlDB.execSQL("insert into weatherType values(0,'晴','sunny','drawable');");
+            sqlDB.execSQL("insert into weatherType values(1,'多云','cloudy','drawable');");
+            sqlDB.execSQL("insert into weatherType values(2,'阴','overcast','drawable');");
+            sqlDB.execSQL("insert into weatherType values(3,'阵雨','shower','drawable');");
+            sqlDB.execSQL("insert into weatherType values(4,'雷阵雨','thundershower','drawable');");
+            sqlDB.execSQL("insert into weatherType values(5,'雷阵雨伴有冰雹','thundershower_with_hail','drawable');");
+            sqlDB.execSQL("insert into weatherType values(6,'雨夹雪','sleet','drawable');");
+            sqlDB.execSQL("insert into weatherType values(7,'小雨','light_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(8,'中雨','moderate_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(9,'大雨','heavy_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(10,'暴雨','storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(11,'大暴雨','heavy_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(12,'特大暴雨','severe_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(13,'阵雪','snow_flurry','drawable');");
+            sqlDB.execSQL("insert into weatherType values(14,'小雪','light_snow','drawable');");
+            sqlDB.execSQL("insert into weatherType values(15,'中雪','moderate_snow','drawable');");
+            sqlDB.execSQL("insert into weatherType values(16,'大雪','heavy_snow','drawable');");
+            sqlDB.execSQL("insert into weatherType values(17,'暴雪','snowstorm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(18,'雾','foggy','drawable');");
+            sqlDB.execSQL("insert into weatherType values(19,'冻雨','ice_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(20,'沙尘暴','dust_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(21,'小到中雨','light_to_moderate_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(22,'中到大雨','moderate_to_heavy_rain','drawable');");
+            sqlDB.execSQL("insert into weatherType values(23,'大到暴雨','heavy_rain_to_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(24,'暴雨到大暴雨','storm_to_heavy_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(25,'大暴雨到特大暴雨','heavy_to_severe_storm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(26,'小到中雪','light_to_moderate_snow','drawable');");
+            sqlDB.execSQL("insert into weatherType values(27,'中到大雪','moderate_to_heavy_snow','drawable');");
+            sqlDB.execSQL("insert into weatherType values(28,'大到暴雪','heavy_snow_to_snowstorm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(29,'浮尘','dust','drawable');");
+            sqlDB.execSQL("insert into weatherType values(30,'扬沙','sand','drawable');");
+            sqlDB.execSQL("insert into weatherType values(31,'强沙尘暴','sandstorm','drawable');");
+            sqlDB.execSQL("insert into weatherType values(53,'霾','haze','drawable');");
+            sqlDB.execSQL("insert into weatherType values(99,'无','unknown','drawable');");
+            sqlDB.setTransactionSuccessful();
+            sqlDB.endTransaction();
+        }
+    }
+
+    public int getImageId(String type){
+        String fileName = "unknown";
+        String filepath = "drawable";
+        String sql = "select en_name from weatherType where cn_name like ?";
+        Cursor cursor = sqlDB.rawQuery(sql,new String[]{type});
+        if (cursor.moveToFirst()){
+            do {
+                fileName = cursor.getString(cursor.getColumnIndex("en_name"));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return myContext.getResources().getIdentifier(fileName,filepath,myContext.getPackageName());
+    }
     public List<String> getProvinces(){
         List<String> list = new ArrayList<>();
         String sql = "select distinct province from location";
