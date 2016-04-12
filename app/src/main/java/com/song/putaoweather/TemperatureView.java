@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -37,8 +38,6 @@ public class TemperatureView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(Color.rgb(76, 175, 80));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
         mPaint.setColor(Color.YELLOW);
         int size = getMax(dayTemp) - getMin(nightTemp) + 3;
         int nightMin = getMin(nightTemp);

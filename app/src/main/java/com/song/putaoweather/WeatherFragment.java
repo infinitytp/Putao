@@ -33,6 +33,7 @@ public class WeatherFragment extends Fragment {
     private GridView gridViewfordays;
     private TemperatureView myTempView;
     private RelativeLayout liveRL;
+    private ImageView imageViewType;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -58,7 +59,7 @@ public class WeatherFragment extends Fragment {
         String response = getArguments().getString("Response");
         WeatherLive weatherLive = ParseXmlUtil.getLiveWeather(response);
         List<Weather> weatherList = ParseXmlUtil.getSixDaysWeather(response);
-        refreshLiveWeather(weatherLive);
+        refreshLiveWeather(weatherLive,weatherList);
         liveType.setText(weatherList.get(1).getDayType());
         myTempView.setWeatherList(weatherList);
         refreshWeather(weatherList);
@@ -75,14 +76,18 @@ public class WeatherFragment extends Fragment {
         gridViewfordays = (GridView) view.findViewById(R.id.girdViewfordays);
         myTempView = (TemperatureView) view.findViewById(R.id.myTempView);
         liveRL = (RelativeLayout) view.findViewById(R.id.liveRL);
+        imageViewType = (ImageView) view.findViewById(R.id.imageViewType);
     }
 
-    public void refreshLiveWeather(WeatherLive weatherLive){
+    public void refreshLiveWeather(WeatherLive weatherLive,List<Weather> weatherList){
+        WeatherDB myWeatherDB = WeatherDB.getInstance(getContext());
         cityLive.setText(weatherLive.getCity());
         liveTemperature.setText(weatherLive.getWendu() + "℃");
         liveWindPower.setText("风力:    " + weatherLive.getFengli());
         liveWindDirection.setText("风向:    " + weatherLive.getFengxiang());
         liveHumidity.setText("湿度:    " + weatherLive.getShidu());
+        int imageId = myWeatherDB.getImageId(weatherList.get(1).getDayType());
+        imageViewType.setImageResource(imageId);
     }
 
     public void refreshWeather(List<Weather> weatherList){

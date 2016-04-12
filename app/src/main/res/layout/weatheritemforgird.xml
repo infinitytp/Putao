@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="日期"
         android:textSize="15sp"
+        android:textColor="#FFFFFF"
         android:gravity="center"
         android:layout_margin="5dp"
         android:padding="5dp"/>
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textSize="15sp"
+        android:textColor="#FFFFFF"
         android:text="类型"
         android:gravity="bottom|center"/>
 

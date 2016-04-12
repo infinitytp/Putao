@@ -3,6 +3,7 @@ package com.song.putaoweather;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +109,7 @@ public class SelectCountyActivity extends Activity {
             String city = dataList.get(position);
             TextView tv = (TextView) view.findViewById(R.id.gridItemTv);
             tv.setText(city);
+            tv.setTextColor(Color.WHITE);
             return view;
         }
     }

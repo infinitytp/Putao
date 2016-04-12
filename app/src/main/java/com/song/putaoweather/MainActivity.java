@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("Cities",SharedPreferencesUtils.List2String(cities));
             startActivityForResult(intent, MANAGE_COUNTY_REQUEST_CODE);
         } else if (id == R.id.nav_setting) {
-
+            Toast.makeText(MainActivity.this,"正在增加设置功能",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
             shareForWeather = new OneKeyShareForWeather(MainActivity.this);
             shareForWeather.share();

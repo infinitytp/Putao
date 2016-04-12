@@ -1,5 +1,8 @@
 package com.song.putaoweather.utils;
 
+import android.util.Log;
+
+import com.mob.tools.utils.LocalDB;
 import com.song.putaoweather.model.Weather;
 import com.song.putaoweather.model.WeatherLive;
 
@@ -12,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by SongPc on 2015/12/28.
@@ -104,7 +109,14 @@ public class ParseXmlUtil {
                             weather = new Weather();
                         }
                         if (tagName!=null && tagName.equals("date_1") && weather!=null){
-                            weather.setDate(xmlPullParser.nextText().split("日")[1]);
+                            StringBuilder sb = new StringBuilder();
+                            String date = xmlPullParser.nextText();
+                            Pattern p = Pattern.compile("[\\u4E00-\\u9FA5][\\u4E00-\\u9FA5][\\u4E00-\\u9FA5]$");
+                            Matcher matcher = p.matcher(date);
+                            if (matcher.find()){
+                                sb.append(matcher.group());
+                            }
+                            weather.setDate(sb.toString());
                         }
                         if (tagName!=null && tagName.equals("high_1") && weather!=null){
                             weather.setHigh(xmlPullParser.nextText().split("温")[1]);
@@ -125,7 +137,14 @@ public class ParseXmlUtil {
                             weather = new Weather();
                         }
                         if (tagName!=null && tagName.equals("date") && weather!=null){
-                            weather.setDate(xmlPullParser.nextText().split("日")[1]);
+                            StringBuilder sb = new StringBuilder();
+                            String date = xmlPullParser.nextText();
+                            Pattern p = Pattern.compile("[\\u4E00-\\u9FA5][\\u4E00-\\u9FA5][\\u4E00-\\u9FA5]$");
+                            Matcher matcher = p.matcher(date);
+                            if (matcher.find()){
+                                sb.append(matcher.group());
+                            }
+                            weather.setDate(sb.toString());
                         }
                         if (tagName!=null && tagName.equals("high") && weather!=null){
                             weather.setHigh(xmlPullParser.nextText().split("温")[1]);

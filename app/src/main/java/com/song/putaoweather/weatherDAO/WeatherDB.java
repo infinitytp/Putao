@@ -74,7 +74,7 @@ public class WeatherDB implements WeatherDBInterface{
     }
 
     public void writeWeatherType(){
-        if (sqlDB.query("location",null,null,null,null,null,null).getCount()>0){
+        if (sqlDB.query("weatherType",null,null,null,null,null,null).getCount()>0){
             return;
         } else {
             sqlDB.beginTransaction();

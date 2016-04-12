@@ -30,7 +30,7 @@ public class ManageCountyActivity extends Activity {
         intent = getIntent();
         String string = intent.getStringExtra("Cities");
         cities = SharedPreferencesUtils.String2List(string);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,cities);
+        adapter = new ArrayAdapter<>(this,R.layout.simple_list_item_for_delete,cities);
         cityListView.setAdapter(adapter);
         cityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
